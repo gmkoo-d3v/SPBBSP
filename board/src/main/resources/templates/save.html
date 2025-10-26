@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<form action="/save" method="post">
+<form th:action="@{/save}" method="post">
     제목: <input type="text" name="boardTitle"><br>
     작성자: <input type="text" name="boardWriter"><br>
-    비밀번호: <input type="text" name="boardPass"><br>
+    비밀번호: <input type="password" name="boardPass"><br>
     내용: <input type="text" name="boardContents"><br>
     <input type="submit" value="작성">
 </form>

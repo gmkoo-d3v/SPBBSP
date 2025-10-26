@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### macOS ###
+.DS_Store
+
+### Gradle Home ###
+.gradle-home/
+
+### Temporary Files ###
+.tmp/

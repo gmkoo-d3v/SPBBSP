@@ -1,7 +1,14 @@
 package com.kosa.board.repository;
 
-import org.springframework.stereotype.Repository;
+import com.kosa.board.dto.BoardDTO;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public class BoardRepository {
+import java.util.List;
+
+@Mapper
+public interface BoardRepository {
+
+    void save(BoardDTO boardDTO);
+
+    List<BoardDTO> findAll();
 }
