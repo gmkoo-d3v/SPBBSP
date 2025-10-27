@@ -5,5 +5,6 @@
 <configuration>
     <typeAliases>
         <typeAlias type="com.kosa.board.dto.BoardDTO" alias="board"/>
+        <typeAlias type="com.kosa.board.dto.BoardFileDTO" alias="boardFile"/>
     </typeAliases>
 </configuration>

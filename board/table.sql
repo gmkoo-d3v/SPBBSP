@@ -21,3 +21,10 @@ create table board_file_table
     boardId bigint,
     constraint fk_board_file foreign key(boardId) references board_table(id) on delete cascade
 );
+(
+  id bigint auto_increment primary key,
+  originalFileName varchar(100),
+  storedFileName varchar(100),
+  boardId bigint,
+  constraint fk_board_file foreign key(boardId) references board_table(id) on delete cascade
+);
