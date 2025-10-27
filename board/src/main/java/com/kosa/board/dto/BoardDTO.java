@@ -19,6 +19,6 @@ public class BoardDTO {
     private int boardHits;
     private String createdAt;
     private int fileAttached;
-    private MultipartFile boardFile;
+    private List<MultipartFile> boardFile;
 
 }
