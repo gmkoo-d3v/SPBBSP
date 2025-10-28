@@ -130,6 +130,128 @@
             max-width: 800px;
             margin: 0 auto;
         }
+
+        /* Comment Section Styles */
+        .comment-section {
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .comment-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #667eea;
+            margin-bottom: 30px;
+        }
+
+        .comment-form h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .comment-form input[type="text"],
+        .comment-form textarea {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 15px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .comment-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .comment-form button {
+            width: auto;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+
+        .comment-list {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #50C878;
+        }
+
+        .comment-list h3 {
+            color: #50C878;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+
+        .comment-item {
+            padding: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-item:hover {
+            background: linear-gradient(to right, #f8f9ff, #fff5f8);
+            border-radius: 10px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .comment-date {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .comment-content {
+            color: #333;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .comment-delete {
+            padding: 6px 16px;
+            font-size: 13px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            margin: 0;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -173,17 +295,81 @@
     <button onclick="deleteReq()">삭제</button>
 </div>
 
+<!-- Comment Section -->
+<div class="comment-section">
+    <!-- Comment Form -->
+    <div class="comment-form">
+        <h3>댓글 작성</h3>
+        <form th:action="@{/comment/save}" method="post">
+            <input type="hidden" name="boardId" th:value="${board.id}">
+            <input type="text" name="commentWriter" placeholder="작성자" required>
+            <textarea name="commentContents" placeholder="댓글 내용을 입력하세요" required></textarea>
+            <button type="submit">댓글 등록</button>
+        </form>
+    </div>
+
+    <!-- Comment List -->
+    <div class="comment-list">
+        <h3>댓글 (<span id="comment-count">0</span>)</h3>
+        <div id="comment-list-area">
+            <div class="no-comments">댓글이 없습니다.</div>
+        </div>
+    </div>
+</div>
+
 </body>
-<script>
-    const listReq = () =>{
+<script th:inline="javascript">
+    const boardId = [[${board.id}]];
+
+    const listReq = () => {
         location.href="/list";
     }
     const updateReq = () => {
-        location.href = `/update/[[${board.id}]]`;
+        location.href = `/update/${boardId}`;
     }
     const deleteReq = () => {
-        location.href = `/delete/[[${board.id}]]`;
+        location.href = `/delete/${boardId}`;
     }
 
+    // Load comments on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        loadComments();
+    });
+
+    function loadComments() {
+        fetch(`/comment/list/${boardId}`)
+            .then(response => response.json())
+            .then(comments => {
+                const commentListArea = document.getElementById('comment-list-area');
+                const commentCount = document.getElementById('comment-count');
+
+                commentCount.textContent = comments.length;
+
+                if (comments.length === 0) {
+                    commentListArea.innerHTML = '<div class="no-comments">댓글이 없습니다.</div>';
+                } else {
+                    let html = '';
+                    comments.forEach(comment => {
+                        html += `
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.commentWriter}</span>
+                                    <span class="comment-date">${comment.createdAt}</span>
+                                </div>
+                                <div class="comment-content">${comment.commentContents}</div>
+                                <form action="/comment/delete/${comment.id}" method="post" style="display:inline;" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                    <input type="hidden" name="boardId" value="${boardId}">
+                                    <button type="submit" class="comment-delete">삭제</button>
+                                </form>
+                            </div>
+                        `;
+                    });
+                    commentListArea.innerHTML = html;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading comments:', error);
+            });
+    }
 </script>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -15,6 +15,59 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 40px 20px;
             min-height: 100vh;
+        }
+
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .username {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .logout-form {
+            display: inline;
+        }
+
+        .logout-btn {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border: 3px solid transparent;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            border-color: #ee5a52;
+        }
+
+        .actions {
+            max-width: 1200px;
+            margin: 0 auto 20px;
         }
 
         a[href="/save"] {
@@ -110,8 +163,24 @@
             border-bottom-color: #764ba2;
         }
     </style>
+</head>
 <body>
-<a href="/save">글쓰기</a>
+
+<!-- Header with user info and logout -->
+<div class="header">
+    <h1 style="color: #667eea; font-size: 24px;">게시판</h1>
+    <div class="user-info">
+        <span class="username" sec:authentication="name">사용자</span>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="logout-btn">로그아웃</button>
+        </form>
+    </div>
+</div>
+
+<div class="actions">
+    <a href="/save">글쓰기</a>
+</div>
+
 <table>
     <tr>
         <th>번호</th>

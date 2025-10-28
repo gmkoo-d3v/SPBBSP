@@ -6,5 +6,7 @@
     <typeAliases>
         <typeAlias type="com.kosa.board.dto.BoardDTO" alias="board"/>
         <typeAlias type="com.kosa.board.dto.BoardFileDTO" alias="boardFile"/>
+        <typeAlias type="com.kosa.board.dto.UserDTO" alias="user"/>
+        <typeAlias type="com.kosa.board.dto.CommentDTO" alias="comment"/>
     </typeAliases>
 </configuration>
