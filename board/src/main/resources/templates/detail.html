@@ -4,12 +4,131 @@
     <meta charset="UTF-8">
     <title>detail</title>
     <style>
-        table, tr, td, th {
-            border: 1px solid black;
-            border-collapse: collapse;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        table {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #667eea;
+        }
+
         th, td {
-            padding: 10px;
+            padding: 18px 25px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 150px;
+            text-align: left;
+            border-right: 3px solid #50C878;
+        }
+
+        td {
+            color: #333;
+            font-size: 15px;
+            background: white;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            background: linear-gradient(to right, #f8f9ff, #fff5f8);
+        }
+
+        tr:last-child th,
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        img {
+            border: 4px solid #667eea;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+            border-color: #764ba2;
+        }
+
+        button {
+            padding: 12px 28px;
+            margin: 0 8px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 3px solid transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:first-of-type {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        button:first-of-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            border-color: #764ba2;
+        }
+
+        button:nth-of-type(2) {
+            background: linear-gradient(135deg, #50C878 0%, #3aa863 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        button:nth-of-type(2):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(80, 200, 120, 0.6);
+            border-color: #3aa863;
+        }
+
+        button:last-of-type {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        button:last-of-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            border-color: #ee5a52;
+        }
+
+        .button-container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -48,9 +167,11 @@
         </td>
     </tr>
 </table>
-<button onclick="listReq()">목록</button>
-<button onclick="updateReq()">수정</button>
-<button onclick="deleteReq()">삭제</button>
+<div class="button-container">
+    <button onclick="listReq()">목록</button>
+    <button onclick="updateReq()">수정</button>
+    <button onclick="deleteReq()">삭제</button>
+</div>
 
 </body>
 <script>
