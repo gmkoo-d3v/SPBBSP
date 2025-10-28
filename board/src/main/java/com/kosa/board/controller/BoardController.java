@@ -2,7 +2,6 @@ package com.kosa.board.controller;
 
 import com.kosa.board.dto.BoardDTO;
 import com.kosa.board.dto.BoardFileDTO;
-import com.kosa.board.repository.BoardRepository;
 import com.kosa.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
-    private final BoardRepository boardRepository;
 
     @GetMapping("/save")
     public String save(){
