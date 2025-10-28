@@ -16,10 +16,10 @@ drop table if exists board_table;
 create table board_table
 (
     id bigint primary key auto_increment,
-    boardTitle varchar(50),
-    boardWriter varchar(20),
-    boardPass varchar(20),
-    boardContents varchar(500),
+    boardTitle varchar(200),
+    boardWriter varchar(50),
+    boardPass varchar(100),
+    boardContents TEXT,
     boardHits int default 0,
     createdAt datetime default now(),
     fileAttached int default 0
@@ -30,8 +30,8 @@ drop table if exists board_file_table;
 create table board_file_table
 (
     id bigint auto_increment primary key,
-    originalFileName varchar(100),
-    storedFileName varchar(100),
+    originalFileName varchar(200),
+    storedFileName varchar(200),
     boardId bigint,
     constraint fk_board_file foreign key(boardId) references board_table(id) on delete cascade
 );
@@ -41,8 +41,8 @@ drop table if exists comment_table;
 create table comment_table
 (
     id bigint auto_increment primary key,
-    commentWriter varchar(20) not null,
-    commentContents varchar(500) not null,
+    commentWriter varchar(50) not null,
+    commentContents TEXT not null,
     boardId bigint not null,
     createdAt datetime default now(),
     constraint fk_comment_board foreign key(boardId) references board_table(id) on delete cascade
@@ -53,8 +53,8 @@ drop table if exists reply_table;
 create table reply_table
 (
     id bigint auto_increment primary key,
-    replyWriter varchar(20) not null,
-    replyContents varchar(500) not null,
+    replyWriter varchar(50) not null,
+    replyContents TEXT not null,
     commentId bigint not null,
     createdAt datetime default now(),
     constraint fk_reply_comment foreign key(commentId) references comment_table(id) on delete cascade
