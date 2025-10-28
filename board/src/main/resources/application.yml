@@ -16,11 +16,10 @@ spring:
     password: 1004
 
 file:
-  upload-dir: /Users/koding/development/intellij_community/spring_upload_files
+  upload-dir: ${FILE_UPLOAD_DIR:${user.dir}/uploads}  # Defaults to project uploads directory (cross-platform)
 
 # mybatis
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   config-location: classpath:mybatis-config.xml
-
 

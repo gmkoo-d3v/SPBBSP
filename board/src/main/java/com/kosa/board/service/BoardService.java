@@ -29,7 +29,7 @@ public class BoardService {
         } else {
             boardDTO.setFileAttached(1);
             BoardDTO savedBoard = boardRepository.save(boardDTO);
-            Path uploadDirPath = Paths.get(uploadDir);
+            Path uploadDirPath = Paths.get(uploadDir).toAbsolutePath().normalize();
             Files.createDirectories(uploadDirPath);
             for (MultipartFile boardFile: boardFileList) {
                 String originalFilename = boardFile.getOriginalFilename();
