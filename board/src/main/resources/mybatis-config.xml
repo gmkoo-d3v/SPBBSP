@@ -8,5 +8,6 @@
         <typeAlias type="com.kosa.board.dto.BoardFileDTO" alias="boardFile"/>
         <typeAlias type="com.kosa.board.dto.UserDTO" alias="user"/>
         <typeAlias type="com.kosa.board.dto.CommentDTO" alias="comment"/>
+        <typeAlias type="com.kosa.board.dto.ReplyDTO" alias="reply"/>
     </typeAliases>
 </configuration>

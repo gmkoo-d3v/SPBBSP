@@ -47,3 +47,15 @@ create table comment_table
     createdAt datetime default now(),
     constraint fk_comment_board foreign key(boardId) references board_table(id) on delete cascade
 );
+
+-- reply_table (대댓글)
+drop table if exists reply_table;
+create table reply_table
+(
+    id bigint auto_increment primary key,
+    replyWriter varchar(20) not null,
+    replyContents varchar(500) not null,
+    commentId bigint not null,
+    createdAt datetime default now(),
+    constraint fk_reply_comment foreign key(commentId) references comment_table(id) on delete cascade
+);

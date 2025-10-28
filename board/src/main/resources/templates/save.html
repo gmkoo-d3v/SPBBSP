@@ -2,137 +2,170 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>새 글 작성</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Summernote 2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 40px 0;
         }
-
-        form {
+        .form-container {
             background: white;
-            padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            border-top: 5px solid #667eea;
-            border-left: 3px solid transparent;
-            border-right: 3px solid transparent;
-            border-image: linear-gradient(to bottom, #667eea, #764ba2) 1;
-            border-image-slice: 1;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
         }
-
-        form::before {
-            content: '새 글 작성';
-            display: block;
-            font-size: 24px;
-            font-weight: 700;
+        .form-title {
             color: #667eea;
+            font-weight: 700;
             margin-bottom: 30px;
             text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #50C878;
+            font-size: 2rem;
         }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="file"] {
-            width: 100%;
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            border: 2px solid #e8e8e8;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            background: #fafafa;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        input[type="file"] {
-            padding: 12px;
-            background: white;
-            border-style: dashed;
-            cursor: pointer;
-        }
-
-        input[type="file"]:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 15px;
+        .btn-submit {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: 3px solid transparent;
+            border: none;
+            padding: 12px 40px;
+            font-weight: 600;
             border-radius: 25px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: white;
         }
-
-        input[type="submit"]:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-            border-color: #764ba2;
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
         }
-
-        input[type="submit"]:active {
-            transform: translateY(-1px);
+        .btn-cancel {
+            background: #6c757d;
+            border: none;
+            padding: 12px 40px;
+            font-weight: 600;
+            border-radius: 25px;
+            color: white;
+        }
+        .note-editor {
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-<form th:action="@{/save}" method="post" enctype="multipart/form-data">
-    <label>제목:</label>
-    <input type="text" name="boardTitle" required>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="form-title">새 글 작성</h2>
 
-    <label>작성자:</label>
-    <input type="text" name="boardWriter" required>
+            <form th:action="@{/save}" method="post" enctype="multipart/form-data" id="saveForm">
+                <div class="mb-3">
+                    <label for="boardTitle" class="form-label fw-bold">제목</label>
+                    <input type="text" class="form-control" id="boardTitle" name="boardTitle" required>
+                </div>
 
-    <label>비밀번호:</label>
-    <input type="password" name="boardPass" required>
+                <div class="mb-3">
+                    <label for="boardWriter" class="form-label fw-bold">작성자</label>
+                    <input type="text" class="form-control" id="boardWriter" name="boardWriter" required>
+                </div>
 
-    <label>내용:</label>
-    <input type="text" name="boardContents" required>
+                <div class="mb-3">
+                    <label for="boardPass" class="form-label fw-bold">비밀번호</label>
+                    <input type="password" class="form-control" id="boardPass" name="boardPass" required>
+                </div>
 
-    <label>파일:</label>
-    <input type="file" name="boardFile" multiple>
+                <div class="mb-3">
+                    <label for="boardContents" class="form-label fw-bold">내용</label>
+                    <textarea id="boardContents" name="boardContents" class="summernote"></textarea>
+                </div>
 
-    <input type="submit" value="작성">
-</form>
+                <div class="mb-4">
+                    <label for="boardFile" class="form-label fw-bold">파일 첨부</label>
+                    <input type="file" class="form-control" id="boardFile" name="boardFile" multiple>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <button type="submit" class="btn btn-submit">작성하기</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelForm()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Summernote 2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Summernote 초기화
+            $('.summernote').summernote({
+                height: 300,
+                lang: 'ko-KR',
+                placeholder: '내용을 입력하세요...',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+
+            // Form 제출 시 SweetAlert 확인
+            $('#saveForm').submit(function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: '게시글을 작성하시겠습니까?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#667eea',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '작성',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
+        });
+
+        function cancelForm() {
+            Swal.fire({
+                title: '작성을 취소하시겠습니까?',
+                text: '작성 중인 내용이 사라집니다.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '취소',
+                cancelButtonText: '계속 작성'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = '/list';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

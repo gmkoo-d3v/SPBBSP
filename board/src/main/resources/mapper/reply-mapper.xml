@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reply">
+    <insert id="save" parameterType="reply" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO reply_table(replyWriter, replyContents, commentId, createdAt)
+        VALUES(#{replyWriter}, #{replyContents}, #{commentId}, NOW())
+    </insert>
+
+    <select id="findAll" parameterType="Long" resultType="reply">
+        SELECT id, replyWriter, replyContents, commentId,
+               DATE_FORMAT(createdAt, '%Y-%m-%d %H:%i:%s') as createdAt
+        FROM reply_table
+        WHERE commentId = #{commentId}
+        ORDER BY id ASC
+    </select>
+
+    <select id="findById" parameterType="Long" resultType="reply">
+        SELECT id, replyWriter, replyContents, commentId,
+               DATE_FORMAT(createdAt, '%Y-%m-%d %H:%i:%s') as createdAt
+        FROM reply_table
+        WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="reply">
+        UPDATE reply_table
+        SET replyContents = #{replyContents}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM reply_table WHERE id = #{id}
+    </delete>
+</mapper>
