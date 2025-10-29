@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew compileJava:*)",
+      "Bash(find:*)",
+      "Read(//mnt/d/MSA-JAVA/**)",
+      "Skill(ai-cli-tools-skill)",
+      "Bash(codex exec:*)",
+      "Read(//home/kosa/**)",
+      "Bash(~/jdk-21.0.6/bin/java:*)",
+      "Bash(~/jdk-21.0.9/bin/java:*)",
+      "Bash(export JAVA_HOME=~/jdk-21.0.9:*)",
+      "Bash(export PATH=$JAVA_HOME/bin:$PATH)",
+      "Bash(./gradlew bootRun)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
