@@ -4,6 +4,9 @@ server:
 
 # database
 spring:
+  mvc:
+    async:
+      request-timeout: 30s  # Async request timeout
   servlet:
     multipart:
       max-file-size: 10MB        # Max size for a single file
@@ -18,8 +21,16 @@ spring:
 file:
   upload-dir: ${FILE_UPLOAD_DIR:${user.dir}/uploads}  # Defaults to project uploads directory (cross-platform)
 
+# app specific
+app:
+  upload:
+    async-timeout-ms: 30000
+  jwt:
+    secret: ${JWT_SECRET:7bYwzACl3a9LlZ4FaM2hW6/QAxina6hejcbZb4R7o73y5gdinm2DO5MoC/uQP7NkN+uPFdUNfIx6mhBvcBXFhg==}
+    access-ttl-seconds: 3600
+    refresh-ttl-seconds: 1209600
+
 # mybatis
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   config-location: classpath:mybatis-config.xml
-
