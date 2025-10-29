@@ -22,6 +22,26 @@ export const createBoard = async (payload: BoardPayload) => {
   return data
 }
 
+export const createBoardWithFiles = async (payload: BoardPayload, files: File[]) => {
+  const formData = new FormData()
+
+  // Add board data as JSON string
+  const boardJson = JSON.stringify(payload)
+  formData.append('board', boardJson)
+
+  // Add files
+  files.forEach((file) => {
+    formData.append('files', file)
+  })
+
+  const { data } = await api.post('/api/boards/with-files', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return data
+}
+
 export const updateBoard = async (id: number, payload: Partial<BoardPayload>) => {
   const { data } = await api.put(`/api/boards/${id}`, payload)
   return data

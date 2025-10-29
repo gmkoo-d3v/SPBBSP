@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getBoard, deleteBoard } from '../api/boardApi'
 import DOMPurify from 'dompurify'
-import { ArrowLeft, Edit, Trash2 } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, Image as ImageIcon } from 'lucide-react'
 import Swal from 'sweetalert2'
+
+interface BoardFile {
+  id: number
+  fileName: string
+  storedFileName: string
+  fileUrl: string
+}
 
 interface Board {
   id: number
@@ -13,6 +20,7 @@ interface Board {
   boardHits: number
   createdAt: string
   fileAttached: number
+  files?: BoardFile[]
 }
 
 const BoardDetail: React.FC = () => {
@@ -134,6 +142,36 @@ const BoardDetail: React.FC = () => {
           dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
         />
       </div>
+
+      {/* Attached Files */}
+      {item.fileAttached === 1 && item.files && item.files.length > 0 && (
+        <div className="card p-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <ImageIcon className="w-5 h-5" />
+            첨부 이미지 ({item.files.length})
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {item.files.map((file) => (
+              <div key={file.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <img
+                  src={file.fileUrl}
+                  alt={file.fileName}
+                  className="w-full h-64 object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E'
+                  }}
+                />
+                <div className="p-3 bg-gray-50 dark:bg-gray-800">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 truncate" title={file.fileName}>
+                    {file.fileName}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center gap-3 justify-center">
