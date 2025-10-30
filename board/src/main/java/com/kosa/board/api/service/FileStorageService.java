@@ -42,7 +42,7 @@ public class FileStorageService {
         Path targetPath = resolveTargetPath(storedFileName);
         copyFile(file, targetPath);
 
-        String fileUrl = "/uploads/" + storedFileName;
+        String fileUrl = "/upload/" + storedFileName;
         return FileUploadResponse.success(fileUrl, originalFilename);
     }
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useComment } from '../hooks/useComment'
+import { sanitizeAttribute, sanitizeComment } from '../utils/sanitize'
 import Spinner from './Spinner'
 import ReplySection from './ReplySection'
 
@@ -60,14 +61,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({ boardId }) => {
             <div className="comment-item" key={comment.id}>
               <div className="d-flex justify-content-between align-items-start mb-2">
                 <div>
-                  <span className="comment-author"><i className="bi bi-person-circle" /> {comment.commentWriter}</span>
-                  <span className="comment-date ms-2"><i className="bi bi-clock" /> {comment.createdAt}</span>
+                  <span className="comment-author"><i className="bi bi-person-circle" /> {sanitizeAttribute(comment.commentWriter)}</span>
+                  <span className="comment-date ms-2"><i className="bi bi-clock" /> {sanitizeAttribute(comment.createdAt)}</span>
                 </div>
                 <button className="btn btn-sm btn-outline-danger" onClick={() => remove(comment.id)}>
                   <i className="bi bi-trash" /> 삭제
                 </button>
               </div>
-              <div className="comment-content">{comment.commentContents}</div>
+              <div className="comment-content">{sanitizeComment(comment.commentContents)}</div>
 
               <div className="mt-3 d-flex gap-3">
                 <span className="reply-toggle" onClick={(e) => e.preventDefault()}>

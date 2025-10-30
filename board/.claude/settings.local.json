@@ -11,7 +11,8 @@
       "Bash(~/jdk-21.0.9/bin/java:*)",
       "Bash(export JAVA_HOME=~/jdk-21.0.9:*)",
       "Bash(export PATH=$JAVA_HOME/bin:$PATH)",
-      "Bash(./gradlew bootRun)"
+      "Bash(./gradlew bootRun)",
+      "Bash(./mvnw clean compile:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,6 +1,7 @@
 package com.kosa.board.repository;
 
 import com.kosa.board.dto.CommentDTO;
+import com.kosa.board.dto.CommentWithRepliesDTO;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,12 @@ public class CommentRepository {
 
     public void delete(Long id) {
         sql.delete("Comment.delete", id);
+    }
+
+    /**
+     * N+1 문제 해결: 댓글 + 대댓글을 한번에 조회
+     */
+    public List<CommentWithRepliesDTO> findAllWithReplies(Long boardId) {
+        return sql.selectList("Comment.findAllWithReplies", boardId);
     }
 }

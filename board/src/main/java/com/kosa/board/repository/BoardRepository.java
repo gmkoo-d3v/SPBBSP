@@ -2,6 +2,7 @@ package com.kosa.board.repository;
 
 import com.kosa.board.dto.BoardDTO;
 import com.kosa.board.dto.BoardFileDTO;
+import com.kosa.board.dto.BoardWithDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -46,5 +47,20 @@ public class BoardRepository {
 
     public List<BoardFileDTO> findFile(Long id) {
         return sql.selectList("Board.findFile", id);
+    }
+
+    /**
+     * N+1 문제 해결: 게시글 목록 조회 (파일 정보 포함)
+     */
+    public List<BoardDTO> findAllWithFiles() {
+        return sql.selectList("Board.findAllWithFiles");
+    }
+
+    /**
+     * N+1 문제 해결: 게시글 상세 조회 (파일 + 댓글 + 대댓글 포함)
+     * - 단일 쿼리로 모든 관련 데이터를 조회
+     */
+    public BoardWithDetailsDTO findByIdWithDetails(Long id) {
+        return sql.selectOne("Board.findByIdWithDetails", id);
     }
 }

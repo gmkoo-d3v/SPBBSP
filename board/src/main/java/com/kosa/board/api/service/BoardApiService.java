@@ -29,10 +29,27 @@ public class BoardApiService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 게시글 상세 조회 (기존 방식 - N+1 발생)
+     * - 하위 호환성을 위해 유지
+     */
     public BoardResponse getBoard(Long id) {
         BoardDTO boardDTO = findBoardOrThrow(id);
         var fileDTOs = boardRepository.findFile(id);
         return BoardResponse.of(boardDTO, fileDTOs);
+    }
+
+    /**
+     * 게시글 상세 조회 (N+1 해결)
+     * - 단일 쿼리로 게시글 + 파일 + 댓글 + 대댓글을 모두 조회
+     * - MyBatis ResultMap이 자동으로 데이터를 그룹핑
+     */
+    public com.kosa.board.dto.BoardWithDetailsDTO getBoardWithDetails(Long id) {
+        com.kosa.board.dto.BoardWithDetailsDTO result = boardRepository.findByIdWithDetails(id);
+        if (result == null) {
+            throw new ResourceNotFoundException("Board not found with id " + id);
+        }
+        return result;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

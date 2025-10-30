@@ -24,7 +24,7 @@ const createHttp = (): AxiosInstance => {
 const http = createHttp()
 
 // Exponential backoff 재시도 유틸
-async function withRetry<Tz>(fn: () => Promise<T>, retries = 3, baseDelayMs = 300): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, retries = 3, baseDelayMs = 300): Promise<T> {
   let attempt = 0
   let lastError: unknown
   while (attempt < retries) {

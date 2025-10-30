@@ -24,6 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
         }
         registry.addResourceHandler(RESOURCE_HANDLER)
                 .addResourceLocations(resourceLocation);
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations(resourceLocation);
+
+        // Serve React build assets referenced from /react/index.html as "/assets/..."
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/react/assets/");
     }
 
     @Override

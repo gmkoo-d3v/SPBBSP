@@ -1,5 +1,4 @@
 import React from 'react'
-import { useAuth } from '../context/AuthContext'
 import Header from './Header'
 
 interface LayoutProps {

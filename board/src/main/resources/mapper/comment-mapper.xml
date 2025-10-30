@@ -33,4 +33,40 @@
     <delete id="delete" parameterType="Long">
         DELETE FROM comment_table WHERE id = #{id}
     </delete>
+
+    <!-- N+1 문제 해결: 댓글 + 대댓글을 한번에 조회 -->
+    <resultMap id="replyResultMap" type="reply">
+        <id property="id" column="reply_id"/>
+        <result property="replyWriter" column="replyWriter"/>
+        <result property="replyContents" column="replyContents"/>
+        <result property="commentId" column="reply_commentId"/>
+        <result property="createdAt" column="reply_createdAt"/>
+    </resultMap>
+
+    <resultMap id="commentWithRepliesResultMap" type="com.kosa.board.dto.CommentWithRepliesDTO">
+        <id property="id" column="id"/>
+        <result property="commentWriter" column="commentWriter"/>
+        <result property="commentContents" column="commentContents"/>
+        <result property="boardId" column="boardId"/>
+        <result property="createdAt" column="createdAt"/>
+        <collection property="replies" ofType="reply" resultMap="replyResultMap"/>
+    </resultMap>
+
+    <select id="findAllWithReplies" parameterType="Long" resultMap="commentWithRepliesResultMap">
+        SELECT
+            c.id,
+            c.commentWriter,
+            c.commentContents,
+            c.boardId,
+            DATE_FORMAT(c.createdAt, '%Y-%m-%d %H:%i:%s') as createdAt,
+            r.id as reply_id,
+            r.replyWriter,
+            r.replyContents,
+            r.commentId as reply_commentId,
+            DATE_FORMAT(r.createdAt, '%Y-%m-%d %H:%i:%s') as reply_createdAt
+        FROM comment_table c
+        LEFT JOIN reply_table r ON c.id = r.commentId
+        WHERE c.boardId = #{boardId}
+        ORDER BY c.id DESC, r.id ASC
+    </select>
 </mapper>

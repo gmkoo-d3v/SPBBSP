@@ -1,7 +1,18 @@
+// ---- File Upload Types ----
+
 export interface FileUploadResponse {
   fileUrl: string
   fileName: string
 }
+
+export interface FileMetadata {
+  id: number
+  fileName: string
+  storedFileName: string
+  fileUrl: string
+}
+
+// ---- Editor Types ----
 
 export interface BoardContent {
   html: string
@@ -15,13 +26,24 @@ export interface EditorProps {
   onChange?: (content: BoardContent) => void
 }
 
-// ---- Board Detail / Comments / Replies types ----
+// ---- API Response Types ----
 
 export interface ApiResponse<T> {
   success: boolean
   message?: string | null
   data: T
 }
+
+export interface ApiErrorResponse {
+  success: false
+  message: string
+  data: null | Record<string, unknown>
+  timestamp?: string
+  status?: number
+  error?: string
+}
+
+// ---- Board Types ----
 
 export interface BoardResponse {
   id: number
@@ -31,16 +53,25 @@ export interface BoardResponse {
   boardHits: number
   createdAt: string
   fileAttached: number
-  files?: Array<{
-    id?: number
-    fileName: string
-    storedFileName?: string
-    fileUrl: string
-  }>
+  files?: FileMetadata[]
 }
 
 // Backward compatibility alias
 export type Board = BoardResponse
+
+export interface BoardCreateRequest {
+  boardWriter: string
+  boardTitle: string
+  boardContents: string
+}
+
+export interface BoardUpdateRequest {
+  boardWriter: string
+  boardTitle: string
+  boardContents: string
+}
+
+// ---- Comment Types ----
 
 export interface CommentDTO {
   id: number
@@ -50,12 +81,34 @@ export interface CommentDTO {
   createdAt: string
 }
 
+export interface CommentCreateRequest {
+  commentWriter: string
+  commentContents: string
+}
+
+export interface CommentUpdateRequest {
+  commentWriter: string
+  commentContents: string
+}
+
+// ---- Reply Types ----
+
 export interface ReplyDTO {
   id: number
   replyWriter: string
   replyContents: string
   commentId: number
   createdAt: string
+}
+
+export interface ReplyCreateRequest {
+  replyWriter: string
+  replyContents: string
+}
+
+export interface ReplyUpdateRequest {
+  replyWriter: string
+  replyContents: string
 }
 
 // Minimal SweetAlert2 type surface we use

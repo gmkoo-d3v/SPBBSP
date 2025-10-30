@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useReply } from '../hooks/useReply'
+import { sanitizeAttribute, sanitizeComment } from '../utils/sanitize'
 import Spinner from './Spinner'
 
 interface ReplySectionProps {
@@ -59,14 +60,14 @@ const ReplySection: React.FC<ReplySectionProps> = ({ commentId }) => {
               <div className="reply-item" key={reply.id}>
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
-                    <span className="reply-author"><i className="bi bi-arrow-return-right" /> {reply.replyWriter}</span>
-                    <span className="comment-date ms-2"><i className="bi bi-clock" /> {reply.createdAt}</span>
+                    <span className="reply-author"><i className="bi bi-arrow-return-right" /> {sanitizeAttribute(reply.replyWriter)}</span>
+                    <span className="comment-date ms-2"><i className="bi bi-clock" /> {sanitizeAttribute(reply.createdAt)}</span>
                   </div>
                   <button className="btn btn-sm btn-outline-danger" onClick={() => remove(reply.id)}>
                     <i className="bi bi-trash" />
                   </button>
                 </div>
-                <div>{reply.replyContents}</div>
+                <div>{sanitizeComment(reply.replyContents)}</div>
               </div>
             ))
           )}

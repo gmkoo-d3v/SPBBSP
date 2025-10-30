@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
-import DOMPurify from 'dompurify'
 import { boardApi } from '../services/commentService'
 import type { ApiResponse, BoardResponse } from '../types'
+import { sanitizeHtml, sanitizeAttribute } from '../utils/sanitize'
 import Spinner from './Spinner'
 import CommentSection from './CommentSection'
 
@@ -112,16 +112,16 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
 
       {/* 게시글 상세 */}
       <div className="detail-container">
-        <h2 className="detail-title">{board?.boardTitle}</h2>
+        <h2 className="detail-title">{sanitizeAttribute(board?.boardTitle || '')}</h2>
 
         <div className="detail-info">
           <div className="info-item">
             <i className="bi bi-person-fill" />
-            <strong>{board?.boardWriter}</strong>
+            <strong>{sanitizeAttribute(board?.boardWriter || '')}</strong>
           </div>
           <div className="info-item">
             <i className="bi bi-calendar-event" />
-            <span>{board?.createdAt}</span>
+            <span>{sanitizeAttribute(board?.createdAt || '')}</span>
           </div>
           <div className="info-item">
             <i className="bi bi-eye-fill" />
@@ -131,7 +131,7 @@ const BoardDetail: React.FC<BoardDetailProps> = ({ boardId }) => {
 
         <div
           className="detail-content prose max-w-none dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(board?.boardContents || '') }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(board?.boardContents || '') }}
         />
 
         {/* 첨부 이미지 */}

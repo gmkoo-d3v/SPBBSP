@@ -40,4 +40,107 @@
         select * from board_file_table where boardId = #{id}
     </select>
 
+    <!-- N+1 문제 해결: 게시글 목록 + 파일 정보를 한번에 조회 -->
+    <resultMap id="boardWithFilesResultMap" type="com.kosa.board.dto.BoardDTO">
+        <id property="id" column="id"/>
+        <result property="boardTitle" column="boardTitle"/>
+        <result property="boardWriter" column="boardWriter"/>
+        <result property="boardHits" column="boardHits"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="fileAttached" column="fileAttached"/>
+        <collection property="files" ofType="boardFile" javaType="java.util.List">
+            <id property="id" column="file_id"/>
+            <result property="boardId" column="file_boardId"/>
+            <result property="originalFileName" column="originalFileName"/>
+            <result property="storedFileName" column="storedFileName"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllWithFiles" resultMap="boardWithFilesResultMap">
+        SELECT
+            b.id,
+            b.boardTitle,
+            b.boardWriter,
+            b.boardHits,
+            DATE_FORMAT(b.createdAt, "%Y-%m-%d") as createdAt,
+            b.fileAttached,
+            bf.id as file_id,
+            bf.boardId as file_boardId,
+            bf.originalFileName,
+            bf.storedFileName
+        FROM board_table b
+        LEFT JOIN board_file_table bf ON b.id = bf.boardId
+        ORDER BY b.id DESC, bf.id ASC
+    </select>
+
+    <!-- N+1 문제 해결: 게시글 상세 + 파일 + 댓글을 한번에 조회 -->
+    <resultMap id="boardFileResultMap" type="boardFile">
+        <id property="id" column="file_id"/>
+        <result property="boardId" column="file_boardId"/>
+        <result property="originalFileName" column="originalFileName"/>
+        <result property="storedFileName" column="storedFileName"/>
+    </resultMap>
+
+    <resultMap id="replyResultMap" type="reply">
+        <id property="id" column="reply_id"/>
+        <result property="replyWriter" column="replyWriter"/>
+        <result property="replyContents" column="replyContents"/>
+        <result property="commentId" column="reply_commentId"/>
+        <result property="createdAt" column="reply_createdAt"/>
+    </resultMap>
+
+    <resultMap id="commentWithRepliesResultMap" type="com.kosa.board.dto.CommentWithRepliesDTO">
+        <id property="id" column="comment_id"/>
+        <result property="commentWriter" column="commentWriter"/>
+        <result property="commentContents" column="commentContents"/>
+        <result property="boardId" column="comment_boardId"/>
+        <result property="createdAt" column="comment_createdAt"/>
+        <collection property="replies" ofType="reply" resultMap="replyResultMap"/>
+    </resultMap>
+
+    <resultMap id="boardWithDetailsResultMap" type="com.kosa.board.dto.BoardWithDetailsDTO">
+        <id property="id" column="id"/>
+        <result property="boardTitle" column="boardTitle"/>
+        <result property="boardWriter" column="boardWriter"/>
+        <result property="boardPass" column="boardPass"/>
+        <result property="boardContents" column="boardContents"/>
+        <result property="boardHits" column="boardHits"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="fileAttached" column="fileAttached"/>
+        <collection property="files" ofType="boardFile" resultMap="boardFileResultMap"/>
+        <collection property="comments" ofType="com.kosa.board.dto.CommentWithRepliesDTO" resultMap="commentWithRepliesResultMap"/>
+    </resultMap>
+
+    <select id="findByIdWithDetails" parameterType="Long" resultMap="boardWithDetailsResultMap">
+        SELECT
+            b.id,
+            b.boardTitle,
+            b.boardWriter,
+            b.boardPass,
+            b.boardContents,
+            b.boardHits,
+            DATE_FORMAT(b.createdAt, "%Y-%m-%d %H:%i:%s") as createdAt,
+            b.fileAttached,
+            bf.id as file_id,
+            bf.boardId as file_boardId,
+            bf.originalFileName,
+            bf.storedFileName,
+            c.id as comment_id,
+            c.commentWriter,
+            c.commentContents,
+            c.boardId as comment_boardId,
+            DATE_FORMAT(c.createdAt, '%Y-%m-%d %H:%i:%s') as comment_createdAt,
+            r.id as reply_id,
+            r.replyWriter,
+            r.replyContents,
+            r.commentId as reply_commentId,
+            DATE_FORMAT(r.createdAt, '%Y-%m-%d %H:%i:%s') as reply_createdAt
+        FROM board_table b
+        LEFT JOIN board_file_table bf ON b.id = bf.boardId
+        LEFT JOIN comment_table c ON b.id = c.boardId
+        LEFT JOIN reply_table r ON c.id = r.commentId
+        WHERE b.id = #{id}
+        ORDER BY c.id DESC, r.id ASC
+    </select>
+
 </mapper>
