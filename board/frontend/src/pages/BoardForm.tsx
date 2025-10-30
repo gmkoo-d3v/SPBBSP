@@ -26,6 +26,7 @@ const BoardForm: React.FC = () => {
   })
   const [files, setFiles] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -75,12 +76,11 @@ const BoardForm: React.FC = () => {
     }))
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || [])
-    if (selectedFiles.length === 0) return
+  const addFiles = (newFiles: File[]) => {
+    if (newFiles.length === 0) return
 
     // Limit to 10 files
-    if (files.length + selectedFiles.length > 10) {
+    if (files.length + newFiles.length > 10) {
       Swal.fire({
         icon: 'warning',
         title: '파일 개수 초과',
@@ -89,10 +89,51 @@ const BoardForm: React.FC = () => {
       return
     }
 
+    // Filter only image files
+    const imageFiles = newFiles.filter(file => file.type.startsWith('image/'))
+    if (imageFiles.length !== newFiles.length) {
+      Swal.fire({
+        icon: 'warning',
+        title: '파일 형식 오류',
+        text: '이미지 파일만 첨부할 수 있습니다.',
+      })
+    }
+
     // Create preview URLs
-    const newPreviewUrls = selectedFiles.map(file => URL.createObjectURL(file))
-    setFiles([...files, ...selectedFiles])
+    const newPreviewUrls = imageFiles.map(file => URL.createObjectURL(file))
+    setFiles([...files, ...imageFiles])
     setPreviewUrls([...previewUrls, ...newPreviewUrls])
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || [])
+    addFiles(selectedFiles)
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    const droppedFiles = Array.from(e.dataTransfer.files)
+    addFiles(droppedFiles)
   }
 
   const removeFile = (index: number) => {
@@ -268,11 +309,28 @@ const BoardForm: React.FC = () => {
           {/* File Upload */}
           {!isEdit && (
             <div className="form-group">
-              <label className="form-label">
-                이미지 첨부 (최대 10개)
+              <label className="form-label flex items-center justify-between">
+                <span>이미지 첨부 (최대 10개)</span>
+                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  {files.length}/10
+                </span>
               </label>
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
+                {/* Drag & Drop Zone */}
+                <div
+                  onDragEnter={handleDragEnter}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`
+                    relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer
+                    ${isDragging
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+                    }
+                  `}
+                  onClick={() => fileInputRef.current?.click()}
+                >
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -281,49 +339,73 @@ const BoardForm: React.FC = () => {
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="btn btn-secondary flex items-center gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    파일 선택
-                  </button>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {files.length}개 선택됨
-                  </span>
+                  <div className="flex flex-col items-center gap-3">
+                    <div className={`
+                      p-4 rounded-full transition-colors
+                      ${isDragging
+                        ? 'bg-blue-100 dark:bg-blue-800'
+                        : 'bg-gray-100 dark:bg-gray-700'
+                      }
+                    `}>
+                      <Upload className={`
+                        w-8 h-8 transition-colors
+                        ${isDragging
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-400 dark:text-gray-500'
+                        }
+                      `} />
+                    </div>
+                    <div>
+                      <p className="text-base font-medium text-gray-700 dark:text-gray-300">
+                        {isDragging ? '파일을 여기에 놓으세요' : '이미지를 드래그하거나 클릭하여 선택'}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        PNG, JPG, GIF 등 (최대 10개)
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* File Preview */}
                 {files.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {files.map((file, index) => (
-                      <div
-                        key={index}
-                        className="relative border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden group"
-                      >
-                        <img
-                          src={previewUrls[index]}
-                          alt={file.name}
-                          className="w-full h-32 object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center">
-                          <button
-                            type="button"
-                            onClick={() => removeFile(index)}
-                            className="opacity-0 group-hover:opacity-100 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-all"
-                            title="삭제"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      선택된 파일 ({files.length}개)
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {files.map((file, index) => (
+                        <div
+                          key={index}
+                          className="relative border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden group bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all"
+                        >
+                          <div className="aspect-square">
+                            <img
+                              src={previewUrls[index]}
+                              alt={file.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="absolute top-2 right-2">
+                            <button
+                              type="button"
+                              onClick={() => removeFile(index)}
+                              className="bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg transition-all transform hover:scale-110"
+                              title="삭제"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                            <p className="text-xs text-white truncate" title={file.name}>
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-gray-300">
+                              {(file.size / 1024).toFixed(1)} KB
+                            </p>
+                          </div>
                         </div>
-                        <div className="p-2 bg-gray-50 dark:bg-gray-800">
-                          <p className="text-xs text-gray-700 dark:text-gray-300 truncate" title={file.name}>
-                            {file.name}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
